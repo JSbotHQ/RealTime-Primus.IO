@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+    <title>Primus.IO + Express.js - group chat demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font: 13px Helvetica, Arial; }
+        form { padding: 3px; position: fixed; bottom: 0; width: 100%; }
+        form input { border: 1px solid #c5bfbf; padding: 10px; width: 90%; margin-right: .5%; }
+        form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+        #messages { list-style-type: none; margin: 0; padding: 0; }
+        #messages li { padding: 5px 10px; }
+        #messages li:nth-child(odd) { background: #eee; }
+    </style>
+</head>
+<body>
+<script src="/primus/primus.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+    const primus = Primus.connect('http://'+window.location.hostname+':3000');
+    primus.on('open', ()=> {
+
+      primus.id((id)=> {
+        $('#messages').append($('<li>').text('ID:'+id))
+      });
+      primus.on('message', (msg)=>{
+        $('#messages').append($('<li>').text(msg));
+      });
+      var params = new URLSearchParams(window.location.search.slice(1))
+      var room = params.get('room')
+      primus.emit('subscribe', room)
+      $(function () {
+
+        $('form').submit(()=>{
+          var message = $('#m').val();
+
+          $('#messages').append($('<li>').text(message));
+          primus.send('broadcast', { room: room, message: message });
+          $('#m').val('');
+          return false;
+        });
+      });
+      //  primus.leave('unsubscribe',room)
+    })
+</script>
+
+<ul id="messages"></ul>
+<form action="">
+    <input id="m" autocomplete="off" /><button>Send</button>
+</form>
+</body>
+</html>

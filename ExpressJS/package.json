@@ -1,0 +1,27 @@
+{
+  "name": "realtime-socket.io",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JSbotHQ/RealTime-Socket.IO.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JSbotHQ/RealTime-Socket.IO/issues"
+  },
+  "homepage": "https://github.com/JSbotHQ/RealTime-Socket.IO#readme",
+  "dependencies": {
+    "express": "^4.16.3",
+    "primus": "^7.2.0",
+    "primus-emitter": "^3.1.1",
+    "primus-rooms": "^3.4.1",
+    "ws": "^5.1.1"
+  }
+}

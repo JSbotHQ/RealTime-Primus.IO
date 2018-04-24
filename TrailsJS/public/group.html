@@ -28,19 +28,18 @@
       });
       var params = new URLSearchParams(window.location.search.slice(1))
       var room = params.get('room')
-      primus.emit('subscribe', room)
+      primus.send('join', room)
       $(function () {
 
         $('form').submit(()=>{
           var message = $('#m').val();
 
-          $('#messages').append($('<li>').text(message));
           primus.send('broadcast', { room: room, message: message });
           $('#m').val('');
           return false;
         });
       });
-      //  primus.leave('unsubscribe',room)
+      //  primus.leave('leave',room)
     })
 </script>
 

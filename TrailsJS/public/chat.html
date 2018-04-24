@@ -37,6 +37,7 @@
         $('form').submit(()=>{
           let id = $('#id').val()
           let message = $('#m').val()
+          $('#messages').append($('<li>').text(message));
           primus.send('messageSubmit', { id, message });
           $('#m').val('');
           return false;
@@ -55,7 +56,7 @@
 <ul class="online" id="online"></ul>
 
 <form action="">
-    <input id="id" placeholder="primus id" autocomplete="off" />
+    <input id="id" placeholder="primus id" autocomplete="off" hidden/>
     <input id="m" placeholder="enter message here" autocomplete="off" /><button>Send</button>
 </form>
 </body>

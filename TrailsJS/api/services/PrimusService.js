@@ -17,24 +17,33 @@ module.exports = class PrimusService extends Service {
     // add rooms to Primus
     this.app.sockets.use('rooms', Rooms);
 
+    /**
+     * send all online friends list to all connected socket
+     */
+    const getOnlineFriends = ()=> {
+
+      let data = Object.keys(this.app.sockets.connections)
+      this.app.sockets.send('allOnlineFriends', { data })
+    }
+
+    /**
+     * Socket client disconnection
+     */
+    const onDisconnect = (spark)=> {
+      console.log(spark.id+' disconnected');
+      getOnlineFriends();
+    }
+
     this.app.sockets.on('connection', (spark)=> {
 
       console.log(spark.id+' connected');
 
       //HANDLERS
       /**
-       * send all online friends list to all connected socket
-       */
-      const getOnlineFriends = ()=> {
-
-        // let data = Object.keys(this.app.sockets.sockets.sockets)
-        // this.app.sockets.emit('allOnlineFriends', { data })
-      }
-      /**
        * Send a message to particular socket
        * @param data
        */
-      const onMessageSubmit = (data)=> { this.app.sockets.to(data.id).send('message', data.message); }
+      const onMessageSubmit = (data)=> { this.app.sockets.spark(data.id, spark.id).send('message', data.message); }
       /**
        * Subscribe to join a room
        * @param room
@@ -50,22 +59,15 @@ module.exports = class PrimusService extends Service {
        * @param data
        */
       const onBroadcastToRoom = (data)=> { this.app.sockets.room(data.room).send('message', data.message); }
-      /**
-       * Socket client disconnection
-       */
-      const onDisconnect = ()=> {
-        console.log(spark.id+' disconnected');
-        getOnlineFriends();
-      }
 
       //LISTENERS
       getOnlineFriends()
       spark.on('messageSubmit', onMessageSubmit)
-      spark.on('subscribe', onSubscribe)
-      spark.on('unsubscribe', onUnSubscribe)
+      spark.on('join', onSubscribe)
+      spark.on('leave', onUnSubscribe)
       spark.on('broadcast', onBroadcastToRoom)
-      spark.on('disconnect', onDisconnect)
     });
+    this.app.sockets.on('disconnection', onDisconnect)
   }
 }
 

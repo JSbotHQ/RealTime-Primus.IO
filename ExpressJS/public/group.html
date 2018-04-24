@@ -18,28 +18,29 @@
 <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
 <script>
     const primus = Primus.connect('http://'+window.location.hostname+':3000');
-    primus.id((id)=> {
-      $('#messages').append($('<li>').text('ID:'+id))
-    });
-    socket.on('message', (msg)=>{
+    primus.on('open', ()=> {
+
+      primus.id((id)=> {
+        $('#messages').append($('<li>').text('ID:'+id))
+      });
+      primus.on('message', (msg)=>{
         $('#messages').append($('<li>').text(msg));
-    });
-    var params = new URLSearchParams(window.location.search.slice(1))
-    var room = params.get('room')
-    socket.emit('subscribe', room)
-    $(function () {
+      });
+      var params = new URLSearchParams(window.location.search.slice(1))
+      var room = params.get('room')
+      primus.send('join', room)
+      $(function () {
 
         $('form').submit(()=>{
-            var message = $('#m').val();
+          var message = $('#m').val();
 
-            $('#messages').append($('<li>').text(message));
-            socket.emit('broadcast', { room: room, message: message });
-            $('#m').val('');
-            return false;
+          primus.send('broadcast', { room: room, message: message });
+          $('#m').val('');
+          return false;
         });
-    });
-  //  socket.leave('unsubscribe',room)
-
+      });
+      //  primus.leave('leave',room)
+    })
 </script>
 
 <ul id="messages"></ul>

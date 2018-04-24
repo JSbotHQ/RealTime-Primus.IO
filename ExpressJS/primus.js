@@ -1,17 +1,16 @@
 'use strict'
 
-const Primus = require('primus')
 const Emitter = require('primus-emitter')
 const Rooms = require('primus-rooms')
 let primus
 
-module.exports = class PrimusController {
+module.exports = class PrimusCntrl {
 
-  constructor(http) {
+  constructor(primus) {
 
-    primus = new Primus(http)
-    primus.use('emitter', Emitter)
-    primus.use('rooms', Rooms)
+    this.primus = primus
+    primus.plugin('emitter', Emitter)
+    primus.plugin('rooms', Rooms)
   }
 
   /**
@@ -20,25 +19,33 @@ module.exports = class PrimusController {
    */
   init() {
 
-    // On socket client connection
-    primus.on('connection', (spark)=> {
+    /**
+     * send all online friends list to all connected socket
+     */
+    const getOnlineFriends = ()=> {
+
+      let data = Object.keys(this.primus.connections)
+      this.primus.send('allOnlineFriends', { data })
+    }
+
+    /**
+     * Socket client disconnection
+     */
+    const onDisconnect = (spark)=> {
+      console.log(spark.id+' disconnected');
+      getOnlineFriends();
+    }
+
+    this.primus.on('connection', (spark)=> {
 
       console.log(spark.id+' connected');
 
       //HANDLERS
       /**
-       * send all online friends list to all connected socket
-       */
-      const getOnlineFriends = ()=> {
-
-        // let data = Object.keys(primus.sockets.sockets)
-        // primus.emit('allOnlineFriends', { data })
-      }
-      /**
        * Send a message to particular socket
        * @param data
        */
-      const onMessageSubmit = (data)=> { primus.to(data.id).emit('message', data.message); }
+      const onMessageSubmit = (data)=> { this.primus.spark(data.id, spark.id).send('message', data.message); }
       /**
        * Subscribe to join a room
        * @param room
@@ -53,23 +60,15 @@ module.exports = class PrimusController {
        * Broadcast a message in room
        * @param data
        */
-      const onBroadcastToRoom = (data)=> { spark.room(data.room).emit('message', data.message); }
-      /**
-       * Socket client disconnection
-       */
-      const onDisconnect = ()=> {
-        console.log(spark.id+' disconnected');
-        getOnlineFriends();
-      }
+      const onBroadcastToRoom = (data)=> { this.primus.room(data.room).send('message', data.message); }
 
       //LISTENERS
       getOnlineFriends()
       spark.on('messageSubmit', onMessageSubmit)
-      spark.on('subscribe', onSubscribe)
-      spark.on('unsubscribe', onUnSubscribe)
+      spark.on('join', onSubscribe)
+      spark.on('leave', onUnSubscribe)
       spark.on('broadcast', onBroadcastToRoom)
-      spark.on('disconnect', onDisconnect)
     });
+    this.primus.on('disconnection', onDisconnect)
   }
-
 }

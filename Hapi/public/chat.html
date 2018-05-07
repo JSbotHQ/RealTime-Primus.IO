@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+    <title>Primus.IO + Express.js - chat demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font: 13px Helvetica, Arial; }
+        form { padding: 3px; position: fixed; bottom: 0; width: 100%; }
+        form input { border: 1px solid #c5bfbf; padding: 10px; width: 60%; }
+        form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; margin-left: 3px}
+        #messages { list-style-type: none; margin: 0; padding: 0; float: left; width: 50% }
+        #messages li { padding: 5px 10px; }
+        #messages li:nth-child(odd) { background: #eee; }
+        #online { list-style-type: none; margin: 0; padding: 0; float: right; width: 20%; background: #eee; height: -webkit-fill-available; border-bottom: 1px solid grey }
+        #online li { right: 5px; display: block; padding: 3px; border-bottom: 1px solid white; }
+    </style>
+</head>
+<body>
+<script src="/primus/primus.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    const primus = Primus.connect('http://'+window.location.hostname+':3000');
+    primus.on('open', ()=> {
+      primus.id((id)=> {
+        $('#messages').append($('<li>').text('ID:'+id))
+      });
+      primus.on('allOnlineFriends', (data)=>{
+        $('#online').empty()
+        Object.keys(data.data).forEach(function(key) {
+          $('#online').append('<li onclick="display($(this))">'+data.data[key]+'</li>');
+        });
+      });
+      primus.on('message', (msg)=> {
+        $('#messages').append($('<li>').text(msg));
+      });
+      $(()=> {
+        $('form').submit(()=>{
+          let id = $('#id').val()
+          let message = $('#m').val()
+          $('#messages').append($('<li>').text(message));
+          primus.send('messageSubmit', { id, message });
+          $('#m').val('');
+          return false;
+        });
+      });
+    })
+
+    display = (val)=>{
+        $('#online li').css("background-color", "#eee");
+        $(val).css("background-color", "yellow");
+        $('#id').val($(val).text())
+    }
+</script>
+
+<ul id="messages"></ul>
+<ul class="online" id="online"></ul>
+
+<form action="">
+    <input id="id" placeholder="primus id" autocomplete="off" hidden/>
+    <input id="m" placeholder="enter message here" autocomplete="off" />
+    <button>Send</button>
+</form>
+</body>
+</html>

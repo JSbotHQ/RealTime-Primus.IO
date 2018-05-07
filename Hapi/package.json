@@ -1,0 +1,20 @@
+{
+  "name": "hapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "hapi": "^17.4.0",
+    "inert": "^5.1.0",
+    "primus": "^7.2.0",
+    "primus-emitter": "^3.1.1",
+    "primus-rooms": "^3.4.1",
+    "ws": "^5.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

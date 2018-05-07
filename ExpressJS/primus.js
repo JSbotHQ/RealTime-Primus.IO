@@ -4,7 +4,7 @@ const Emitter = require('primus-emitter')
 const Rooms = require('primus-rooms')
 let primus
 
-module.exports = class PrimusCntrl {
+module.exports = class PrimusCtrl {
 
   constructor(primus) {
 

@@ -4,8 +4,8 @@ const http = require('http').Server(app);
 const Primus = require('primus')
 const primus = new Primus(http)
 
-const PrimusCntrl = require('./primus')
-const primusIntnce = new PrimusCntrl(primus)
+const PrimusCtrl = require('./primus')
+const primusIntnce = new PrimusCtrl(primus)
 primusIntnce.init()
 
 http.listen(3000, ()=>{

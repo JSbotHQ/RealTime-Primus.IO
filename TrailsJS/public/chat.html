@@ -19,7 +19,7 @@
 <script src="/primus/primus.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
-    const primus = Primus.connect('http://'+window.location.hostname+':3000');
+    const primus = Primus.connect('http://'+window.location.hostname+':4004');
     primus.on('open', ()=> {
       primus.id((id)=> {
         $('#messages').append($('<li>').text('ID:'+id))

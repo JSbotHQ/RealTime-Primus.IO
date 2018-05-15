@@ -5,7 +5,7 @@ const Hapi = require('hapi');
 // Create a server with a host and port
 const server=Hapi.server({
     host:'localhost',
-    port:3000
+    port:4004
 });
 
 const Primus = require('primus')

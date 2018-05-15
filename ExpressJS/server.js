@@ -8,8 +8,8 @@ const PrimusCtrl = require('./primus')
 const primusIntnce = new PrimusCtrl(primus)
 primusIntnce.init()
 
-http.listen(3000, ()=>{
-  console.log('listening on *:3000');
+http.listen(4004, ()=>{
+  console.log('listening on *:4004');
 });
 
 // Routes for private chat(peer to peer)

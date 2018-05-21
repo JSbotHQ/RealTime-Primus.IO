@@ -1,8 +1,6 @@
 # RealTime-Primus.IO
 
-#2. TrailsJS
-  - `cd TrailsJS`
-  - start the server by `npm start`.
+#1. ExpressJS
 
   i. peer to peer messaging
    - go to `http://localhost:4004/chat`.
@@ -30,18 +28,19 @@
    - here you can enter any room name of your choice.
    - now send message to this room and it will be received by all clients in the channel.
 
-   client code logic:
+  client code logic:
 
-        socket.emit('subscribe', room)
+        primus.send('messageSend', 'message');
 
-        socket.emit('broadcast', { room: room, message: message })
+        primus.on('message', (msg)=> {
+          console.log(msg
+        });
 
-   server code logic:
+  server code logic:
 
-       socket.on('subscribe', function(room) {
-           socket.join(room)
-       })
+        // send to a specific spark
+        primus.spark(id).send('message', 'message');
 
-      socket.on('broadcast', function(data) {
-          socket.to(data.room).emit('message', data.message);
-      });
+        spark.on('messageSend', function(data){
+           console.log(data)
+        });

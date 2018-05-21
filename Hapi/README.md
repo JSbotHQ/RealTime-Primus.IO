@@ -1,7 +1,7 @@
 # RealTime-Primus.IO
 
-#2. TrailsJS
-  - `cd TrailsJS`
+#3. HapiJS
+  - `cd HapiJS`
   - start the server by `npm start`.
 
   i. peer to peer messaging

@@ -1,6 +1,6 @@
 # RealTime-Primus.IO
 
-#2. TrailsJS
+#3. TrailsJS
   - `cd TrailsJS`
   - start the server by `npm start`.
 

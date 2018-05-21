@@ -1,6 +1,6 @@
 # RealTime-Primus.IO
 
-#3. HapiJS
+#2. HapiJS
   - `cd HapiJS`
   - start the server by `npm start`.
 
